@@ -1,0 +1,33 @@
+{
+    "name" : "sclinternet/scl-zf-price-manager",
+    "description" : "Module for storing and retrieving prices.",
+    "type" : "library",
+    "authors" : [{
+            "name" : "Tom Oram",
+            "email" : "tom@x2k.co.uk",
+            "homepage" : "http://github.com/tomphp"
+        }
+    ],
+    "keywords" : [],
+    "homepage" : "https://github.com/SCLInternet/SclZfPriceManager",
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+        "php" : ">=5.3.3",
+        "sclinternet/scl-zf-utilities": "dev-master",
+        "zendframework/zendframework" : "2.*"
+    },
+    "require-dev" : {
+        "zf-commons/zfc-user-doctrine-orm" : "dev-master",
+        "phpunit/phpunit" : "3.7.*",
+        "squizlabs/php_codesniffer" : "1.*",
+        "phpmd/phpmd" : "1.4.0",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "SclZfPriceManager" : "src/"
+        }
+    }
+}
