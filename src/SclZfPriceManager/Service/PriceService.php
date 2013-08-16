@@ -67,14 +67,14 @@ class PriceService implements PriceServiceInterface
     }
 
     /**
-     * Gets the price for the requested identifier.
+     * {@inheritDoc}
      *
      * @param  string                 $identifier
-     * @param  int                    $profileId
+     * @param  Profile                $profileId
      * @return Price
      * @throws PriceNotFoundException If the PriceItem was not found.
      */
-    public function getPrice($identifier, $profileId = null)
+    public function getPrice($identifier, Profile $profile = null)
     {
         $item = $this->itemMapper->findByIdentifier($identifier);
 
@@ -82,9 +82,9 @@ class PriceService implements PriceServiceInterface
             throw PriceNotFoundException::itemNotFound($identifier);
         }
 
-        $price = (null === $profileId)
+        $price = (null === $profile)
             ? $this->getDefaultPrice($item)
-            : $this->getActivePrice($item, $profileId);
+            : $this->getActivePrice($item, $profile);
 
         if (!$price) {
             return null;
@@ -96,11 +96,25 @@ class PriceService implements PriceServiceInterface
         );
     }
 
-    public function savePrice($identifier, $amount, $description = '', $profileId = null)
-    {
-        $profile = (null === $profileId)
-            ? $this->getDefaultProfile()
-            : $this->loadProfile($profileId);
+    /**
+     * {@inheritDoc}
+     *
+     * The item description is only set if the item is newly created otherwise
+     * it is not changed.
+     *
+     * @param  string                          $identifier
+     * @param  float                           $amount
+     * @param  string                          $description
+     * @param  Profile                         $profileId
+     * @return \SclZfPriceManager\Entity\Price
+     */
+    public function savePrice(
+        $identifier,
+        $amount,
+        $description = '',
+        Profile $profile = null
+    ) {
+        $profile = $profile ?: $this->getDefaultProfile();
 
         $item = $this->itemMapper->findByIdentifier($identifier);
 
@@ -119,7 +133,7 @@ class PriceService implements PriceServiceInterface
     }
 
     /**
-     * Return the default price profile.
+     * {@inheritDoc}
      *
      * @return Profile
      */
@@ -170,12 +184,12 @@ class PriceService implements PriceServiceInterface
      * to the default if one is not found.
      *
      * @param  PriceItem $item
-     * @param  mixed     $profileId
+     * @param  Profile   $profile
      * @return Price|null
      */
-    protected function getActivePrice(PriceItem $item, $profileId)
+    protected function getActivePrice(PriceItem $item, Profile $profile)
     {
-        $price = $this->loadPriceForProfile($item, $profileId);
+        $price = $this->loadPriceForProfile($item, $profile);
 
         if (!$price) {
             $price = $this->getDefaultPrice($item);
@@ -206,16 +220,13 @@ class PriceService implements PriceServiceInterface
      * Returns the price entity for the given item and profile.
      *
      * @param  PriceItem              $item
-     * @param  mixed                  $profileId
+     * @param  Profile                $profile
      * @return Price|null
      * @throws PriceNotFoundException If requested profile was not found.
      */
-    protected function loadPriceForProfile(PriceItem $item, $profileId)
+    protected function loadPriceForProfile(PriceItem $item, Profile $profile)
     {
-        return $this->priceMapper->findForItemAndProfile(
-            $item,
-            $this->loadProfile($profileId)
-        );
+        return $this->priceMapper->findForItemAndProfile($item, $profile);
     }
 
     /**

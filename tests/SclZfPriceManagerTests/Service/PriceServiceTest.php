@@ -75,15 +75,6 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->getPrice(self::TEST_IDENTIFIER);
     }
 
-    public function testGetPriceLoadsGivenProfile()
-    {
-        $profile = 12;
-
-        $this->setLoadingExpectations($profile);
-
-        $this->service->getPrice(self::TEST_IDENTIFIER, $profile);
-    }
-
     public function testGetPriceLoadsCorrectPriceEntity()
     {
         $this->setLoadingExpectations();
@@ -116,9 +107,9 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPriceReturnsNullIfPriceEntityIsNotFound()
     {
-        $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
-        $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $this->setExpectsToLoadDefaultProfile();
 
         $this->priceMapper
              ->expects($this->once())
@@ -130,9 +121,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPriceWithProfileRevertsToDefaultIfPriceItemNotFound()
     {
-        $profileId = 123;
-
-        $item = $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $item = $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
         $defaultProfile = $this->getMock('SclZfPriceManager\Entity\Profile');
@@ -142,12 +131,6 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
               ->method('getTaxRate')
               ->will($this->returnValue($this->taxRate));
 
-        $this->profileMapper
-             ->expects($this->at(0))
-             ->method('findById')
-             ->with($this->equalTo($profileId))
-             ->will($this->returnValue($profile));
-
         $this->priceMapper
              ->expects($this->at(0))
              ->method('findForItemAndProfile')
@@ -155,7 +138,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->will($this->returnValue(null));
 
         $this->profileMapper
-             ->expects($this->at(1))
+             ->expects($this->once())
              ->method('findById')
              ->with($this->equalTo(self::DEFAULT_PROFILE))
              ->will($this->returnValue($defaultProfile));
@@ -166,7 +149,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->with($this->identicalTo($item), $this->identicalTo($defaultProfile))
              ->will($this->returnValue($price));
 
-        $this->service->getPrice(self::TEST_IDENTIFIER, $profileId);
+        $this->service->getPrice(self::TEST_IDENTIFIER, $profile);
     }
 
     public function testGetPriceThrowsWhenItemNotFound()
@@ -188,7 +171,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
             'The default profile was not found'
         );
 
-        $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $this->profileMapper
              ->expects($this->once())
@@ -199,26 +182,6 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->getPrice(self::TEST_IDENTIFIER);
     }
 
-    public function testGetPriceThrowsWhenGiveProfileisNotFound()
-    {
-        $profileId = 100;
-
-        $this->setExpectedException(
-            'SclZfPriceManager\Exception\PriceNotFoundException',
-            "Profile with ID '$profileId' was not found"
-        );
-
-        $this->setExpectedItem(self::TEST_IDENTIFIER);
-
-        $this->profileMapper
-             ->expects($this->once())
-             ->method('findById')
-             ->with($this->equalTo($profileId))
-             ->will($this->returnValue(null));
-
-        $this->service->getPrice(self::TEST_IDENTIFIER, $profileId);
-    }
-
     /*
      *
      * savePrice()
@@ -227,9 +190,9 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testSavePriceReturnsPriceEntity()
     {
-        $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $this->setExpectsToLoadDefaultProfile();
 
-        $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $this->assertInstanceOf(
             'SclZfPriceManager\Entity\Price',
@@ -239,7 +202,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testSavePriceLoadsDefaultProfileWhenNoProfileIsGiven()
     {
-        $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $this->setExpectsToLoadDefaultProfile();
 
         $this->service->savePrice(self::TEST_IDENTIFIER, 42);
     }
@@ -257,41 +220,11 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->savePrice(self::TEST_IDENTIFIER, 42);
     }
 
-    public function testSavePriceLoadsProfileIfProfileIdIsProvided()
-    {
-        $profileId = 22;
-        $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
-
-        $this->profileMapper
-             ->expects($this->once())
-             ->method('findById')
-             ->with($this->equalTo($profileId))
-             ->will($this->returnValue($profile));
-
-        $this->service->savePrice(self::TEST_IDENTIFIER, 42, '', $profileId);
-    }
-
-    public function testSavePriceThrowsWhenProfileCannotBeFound()
-    {
-        $this->setExpectedException('SclZfPriceManager\Exception\PriceNotFoundException');
-
-        $profileId = 22;
-        $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
-
-        $this->profileMapper
-             ->expects($this->once())
-             ->method('findById')
-             ->with($this->equalTo($profileId))
-             ->will($this->returnValue(null));
-
-        $this->service->savePrice(self::TEST_IDENTIFIER, 42, '', $profileId);
-    }
-
     public function testSavePriceAttemptsToLoadTheItem()
     {
-        $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $this->setExpectsToLoadDefaultProfile();
 
-        $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $this->service->savePrice(self::TEST_IDENTIFIER, 20);
     }
@@ -315,16 +248,16 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->method('save')
              ->with($this->equalTo($saveItem));
 
-        $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $this->setExpectsToLoadDefaultProfile();
 
         $this->service->savePrice($identifier, 55, $description);
     }
 
     public function testSavePriceEntityContainsCorrectValues()
     {
-        $profile = $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $profile = $this->setExpectsToLoadDefaultProfile();
 
-        $item = $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $item = $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $price = $this->service->savePrice(self::TEST_IDENTIFIER, 105);
 
@@ -332,11 +265,22 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($item, $price->getItem(), 'Item is incorrect');
     }
 
+    public function testSavePriceEntityUsesGivenProfile()
+    {
+        $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
+
+        $item = $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
+
+        $price = $this->service->savePrice(self::TEST_IDENTIFIER, 105, '', $profile);
+
+        $this->assertSame($profile, $price->getProfile(), 'Profile is incorrect.');
+    }
+
     public function testSavePriceSavesEntity()
     {
-        $profile = $this->setExpectedProfile(self::DEFAULT_PROFILE);
+        $profile = $this->setExpectsToLoadDefaultProfile();
 
-        $item = $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $item = $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
         $priceToSave = new \SclZfPriceManager\Entity\Price();
         $priceToSave->setItem($item);
@@ -356,16 +300,16 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
      *
      */
 
-    protected function setLoadingExpectations($profileId = self::DEFAULT_PROFILE)
+    protected function setLoadingExpectations()
     {
-        $item = $this->setExpectedItem(self::TEST_IDENTIFIER);
+        $item = $this->setExpectsToLoadItem(self::TEST_IDENTIFIER);
 
-        $profile = $this->setExpectedProfile($profileId);
+        $profile = $this->setExpectsToLoadDefaultProfile();
 
-        return $this->setExpectedPrice($item, $profile);
+        return $this->setExpectsToLoadPrice($item, $profile);
     }
 
-    protected function setExpectedItem($identifier)
+    protected function setExpectsToLoadItem($identifier)
     {
         $item = $this->getMock('SclZfPriceManager\Entity\PriceItem');
 
@@ -378,20 +322,20 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         return $item;
     }
 
-    protected function setExpectedProfile($profileId = null)
+    protected function setExpectsToLoadDefaultProfile()
     {
         $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
 
         $this->profileMapper
              ->expects($this->once())
              ->method('findById')
-             ->with($this->equalTo($profileId))
+             ->with($this->equalTo(self::DEFAULT_PROFILE))
              ->will($this->returnValue($profile));
 
         return $profile;
     }
 
-    protected function setExpectedPrice($item, $profile)
+    protected function setExpectsToLoadPrice($item, $profile)
     {
         $priceEntity = $this->getMock('SclZfPriceManager\Entity\Price');
 
