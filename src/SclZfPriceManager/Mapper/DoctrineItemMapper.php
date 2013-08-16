@@ -11,8 +11,8 @@ use SclZfUtilities\Doctrine\FlushLock;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class DoctrinePriceItemMapper extends GenericDoctrineMapper implements
-    PriceItemMapperInterface
+class DoctrineItemMapper extends GenericDoctrineMapper implements
+    ItemMapperInterface
 {
     /**
      * Inject required objects.
@@ -28,7 +28,7 @@ class DoctrinePriceItemMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclBusiness\Entity\PriceItem'
+            'SclBusiness\Entity\Item'
         );
     }
 }

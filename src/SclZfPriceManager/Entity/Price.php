@@ -28,11 +28,11 @@ class Price
     /**
      * The item this price is for.
      *
-     * @var PriceItem
+     * @var Variation
      *
-     * @ORM\ManyToOne(targetEntity="PriceItem")
+     * @ORM\ManyToOne(targetEntity="Variation")
      */
-    protected $item;
+    protected $variation;
 
     /**
      * The profile this price belongs in.
@@ -84,25 +84,25 @@ class Price
     }
 
     /**
-     * Sets the value of item
+     * Sets the value of variation
      *
-     * @param  PriceItem $item
+     * @param  Variation $variation
      * @return self
      */
-    public function setItem(PriceItem $item)
+    public function setVariation(Variation $variation)
     {
-        $this->item = $item;
+        $this->variation = $variation;
         return $this;
     }
 
     /**
-     * Gets the value of item
+     * Gets the value of variation
      *
-     * @return PriceItem
+     * @return Variation
      */
-    public function getItem()
+    public function getVariation()
     {
-        return $this->item;
+        return $this->variation;
     }
 
     /**

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class PriceItem
+class Item
 {
     /**
      * Datebase primary key.
@@ -29,6 +29,8 @@ class PriceItem
      * A unique string used to find this price object.
      *
      * @var string
+     *
+     * @ORM\Column(type="string", unique=true)
      */
     protected $identifier;
 
@@ -36,6 +38,8 @@ class PriceItem
      * A more readable description for what this price is for.
      *
      * @var mixed
+     *
+     * @ORM\Column(type="string")
      */
     protected $description;
 

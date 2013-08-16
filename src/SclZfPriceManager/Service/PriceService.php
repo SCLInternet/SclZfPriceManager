@@ -3,18 +3,22 @@
 namespace SclZfPriceManager\Service;
 
 use SclZfPriceManager\Entity\Price as PriceEntity;
-use SclZfPriceManager\Entity\PriceItem;
 use SclZfPriceManager\Entity\Profile;
+use SclZfPriceManager\Entity\Variation;
 use SclZfPriceManager\Exception\PriceNotFoundException;
-use SclZfPriceManager\Mapper\PriceItemMapperInterface;
 use SclZfPriceManager\Mapper\PriceMapperInterface;
 use SclZfPriceManager\Mapper\ProfileMapperInterface;
 use SclZfPriceManager\Price;
+use SclZfPriceManager\Service\VariationService;
+use SclZfPriceManager\Entity\TaxRate;
 
 /**
  * Service to load and manipulate prices.
  *
+ * @covers SclZfPriceManager\Service\PriceService
+ *
  * @author Tom Oram <tom@scl.co.uk>
+ * @todo   Tidy up this test case as it has got a bit messy after changes in functionality in PriceService.
  */
 class PriceService implements PriceServiceInterface
 {
@@ -24,13 +28,6 @@ class PriceService implements PriceServiceInterface
      * @var int
      */
     protected $defaultProfile;
-
-    /**
-     * PriceItem mapper.
-     *
-     * @var PriceItemMapperInterface
-     */
-    protected $itemMapper;
 
     /**
      * Price profile mapper.
@@ -47,21 +44,28 @@ class PriceService implements PriceServiceInterface
     protected $priceMapper;
 
     /**
+     * The variation service.
+     *
+     * @var VariationService
+     */
+    protected $variationService;
+
+    /**
      * __construct
      *
      * @param  int                      $defaultProfile
-     * @param  PriceItemMapperInterface $itemMapper
+     * @param  VariationService         $variationService,
      * @param  ProfileMapperInterface   $profileMapper
      * @param  PriceMapperInterface     $priceMapper
      */
     public function __construct(
         $defaultProfile,
-        PriceItemMapperInterface $itemMapper,
+        VariationService $variationService,
         ProfileMapperInterface $profileMapper,
         PriceMapperInterface $priceMapper
     ) {
         $this->defaultProfile = $defaultProfile;
-        $this->itemMapper     = $itemMapper;
+        $this->variationService = $variationService;
         $this->profileMapper  = $profileMapper;
         $this->priceMapper    = $priceMapper;
     }
@@ -69,22 +73,35 @@ class PriceService implements PriceServiceInterface
     /**
      * {@inheritDoc}
      *
-     * @param  string                 $identifier
-     * @param  Profile                $profileId
+     * @param  string                 $itemIdentifier
+     * @param  string                 $variationIdentifier
+     * @param  Profile                $profile
      * @return Price
-     * @throws PriceNotFoundException If the PriceItem was not found.
+     * @throws PriceNotFoundException If the variation was not found.
      */
-    public function getPrice($identifier, Profile $profile = null)
-    {
-        $item = $this->itemMapper->findByIdentifier($identifier);
+    public function getPrice(
+        $itemIdentifier,
+        $variationIdentifier = null,
+        Profile $profile = null
+    ) {
+        $variation = $this->variationService->getVariation(
+            $itemIdentifier,
+            $variationIdentifier,
+            '',
+            '',
+            true
+        );
 
-        if (!$item) {
-            throw PriceNotFoundException::itemNotFound($identifier);
+        if (!$variation) {
+            throw PriceNotFoundException::variationNotFound(
+                $itemIdentifier,
+                $variationIdentifier
+            );
         }
 
         $price = (null === $profile)
-            ? $this->getDefaultPrice($item)
-            : $this->getActivePrice($item, $profile);
+            ? $this->getDefaultPrice($variation)
+            : $this->getActivePrice($variation, $profile);
 
         if (!$price) {
             return null;
@@ -102,30 +119,43 @@ class PriceService implements PriceServiceInterface
      * The item description is only set if the item is newly created otherwise
      * it is not changed.
      *
-     * @param  string                          $identifier
+     * @param  string                          $itemIdentifier
      * @param  float                           $amount
-     * @param  string                          $description
-     * @param  Profile                         $profileId
+     * @param  TaxRate                         $taxRate
+     * @param  string                          $variationIdentifier
+     * @param  string                          $itemDescription
+     * @param  string                          $variationDescription
+     * @param  Profile                         $profile
      * @return \SclZfPriceManager\Entity\Price
      */
     public function savePrice(
-        $identifier,
+        $itemIdentifier,
         $amount,
-        $description = '',
+        TaxRate $taxRate,
+        $variationIdentifier = null,
+        $itemDescription = '',
+        $variationDescription = null,
         Profile $profile = null
     ) {
         $profile = $profile ?: $this->getDefaultProfile();
 
-        $item = $this->itemMapper->findByIdentifier($identifier);
+        $variation = $this->variationService->getVariation(
+            $itemIdentifier,
+            $variationIdentifier,
+            $variationDescription,
+            $itemDescription
+        );
 
-        if (!$item) {
-            $item = $this->registerNewItem($identifier, $description);
+        $price = $this->priceMapper->findByProfileAndVariation($profile, $variation);
+
+        if (!$price) {
+            $price = new PriceEntity();
         }
 
-        $price = new PriceEntity();
-
-        $price->setItem($item);
+        $price->setVariation($variation);
         $price->setProfile($profile);
+        $price->setTaxRate($taxRate);
+        $price->setAmount($amount);
 
         $this->priceMapper->save($price);
 
@@ -147,52 +177,32 @@ class PriceService implements PriceServiceInterface
     }
 
     /**
-     * Creates a new price item and persists it to the database.
-     *
-     * @param  string    $identifier
-     * @param  string    $description
-     * @return PriceItem
-     */
-    protected function registerNewItem($identifier, $description)
-    {
-        $item = new PriceItem();
-
-        $item->setIdentifier($identifier);
-        $item->setDescription($description);
-
-        $this->itemMapper->save($item);
-
-        return $item;
-    }
-
-
-    /**
      * Load the default price for the given item.
      *
-     * @param  PriceItem $item
+     * @param  Variation $variation
      * @return Price|null
      */
-    protected function getDefaultPrice(PriceItem $item)
+    protected function getDefaultPrice(Variation $variation)
     {
         $profile = $this->getDefaultProfile();
 
-        return $this->priceMapper->findForItemAndProfile($item, $profile);
+        return $this->priceMapper->findByProfileAndVariation($profile, $variation);
     }
 
     /**
      * Returns the price entity for the given item and profile, will go
      * to the default if one is not found.
      *
-     * @param  PriceItem $item
+     * @param  Variation $variation
      * @param  Profile   $profile
      * @return Price|null
      */
-    protected function getActivePrice(PriceItem $item, Profile $profile)
+    protected function getActivePrice(Variation $variation, Profile $profile)
     {
-        $price = $this->loadPriceForProfile($item, $profile);
+        $price = $this->loadPriceForProfile($variation, $profile);
 
         if (!$price) {
-            $price = $this->getDefaultPrice($item);
+            $price = $this->getDefaultPrice($variation);
         }
 
         return $price;
@@ -219,14 +229,14 @@ class PriceService implements PriceServiceInterface
     /**
      * Returns the price entity for the given item and profile.
      *
-     * @param  PriceItem              $item
+     * @param  Variation              $variation
      * @param  Profile                $profile
      * @return Price|null
      * @throws PriceNotFoundException If requested profile was not found.
      */
-    protected function loadPriceForProfile(PriceItem $item, Profile $profile)
+    protected function loadPriceForProfile(Variation $variation, Profile $profile)
     {
-        return $this->priceMapper->findForItemAndProfile($item, $profile);
+        return $this->priceMapper->findByProfileAndVariation($profile, $variation);
     }
 
     /**
