@@ -14,6 +14,11 @@ class PriceNotFoundException extends \LogicException implements ExceptionInterfa
         return new self("Item with identifier '$identifier' was not found.");
     }
 
+    public static function variationNotFound($itemId, $variationId)
+    {
+        return new self("Variation with identifier '$itemId::$variationId' was not found.");
+    }
+
     public static function defaultProfileNotFound($id)
     {
         return new self("The default profile was not found (ID=$id).");

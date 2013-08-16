@@ -4,7 +4,7 @@ namespace SclZfPriceManager\Mapper;
 
 use SclZfUtilities\Mapper\GenericMapperInterface;
 use SclZfPriceManager\Entity\Profile;
-use SclZfPriceManager\Entity\PriceItem;
+use SclZfPriceManager\Entity\Variation;
 
 /**
  * Interface for mapper for {@see SclZfPriceManager\Entity\Price}.
@@ -13,5 +13,5 @@ use SclZfPriceManager\Entity\PriceItem;
  */
 interface PriceMapperInterface extends GenericMapperInterface
 {
-    public function findForItemAndProfile(PriceItem $item, Profile $profile);
+    public function findByProfileAndVariation(Profile $profile, Variation $variation);
 }
