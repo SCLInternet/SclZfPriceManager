@@ -9,4 +9,9 @@ namespace SclZfPriceManager\Service;
  */
 interface PriceServiceInterface
 {
+    public function getPrice($identifier, $profileId = null);
+
+    public function savePrice($identifier, $amount, $description = '', $profileId = null);
+
+    public function getDefaultProfile();
 }

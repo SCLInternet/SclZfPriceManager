@@ -2,12 +2,14 @@
 
 namespace SclZfPriceManager\Service;
 
-use SclZfPriceManager\Price;
-use SclZfPriceManager\Mapper\PriceItemMapperInterface;
-use SclZfPriceManager\Mapper\ProfileMapperInterface;
-use SclZfPriceManager\Mapper\PriceMapperInterface;
+use SclZfPriceManager\Entity\Price as PriceEntity;
 use SclZfPriceManager\Entity\PriceItem;
+use SclZfPriceManager\Entity\Profile;
 use SclZfPriceManager\Exception\PriceNotFoundException;
+use SclZfPriceManager\Mapper\PriceItemMapperInterface;
+use SclZfPriceManager\Mapper\PriceMapperInterface;
+use SclZfPriceManager\Mapper\ProfileMapperInterface;
+use SclZfPriceManager\Price;
 
 /**
  * Service to load and manipulate prices.
@@ -94,20 +96,52 @@ class PriceService implements PriceServiceInterface
         );
     }
 
-    public function savePrice($identifier, $amount, $description = '')
+    public function savePrice($identifier, $amount, $description = '', $profileId = null)
     {
-        $this->getDefaultProfile();
+        $profile = (null === $profileId)
+            ? $this->getDefaultProfile()
+            : $this->loadProfile($profileId);
 
         $item = $this->itemMapper->findByIdentifier($identifier);
 
         if (!$item) {
             $item = $this->registerNewItem($identifier, $description);
         }
+
+        $price = new PriceEntity();
+
+        $price->setItem($item);
+        $price->setProfile($profile);
+
+        $this->priceMapper->save($price);
+
+        return $price;
     }
 
+    /**
+     * Return the default price profile.
+     *
+     * @return Profile
+     */
+    public function getDefaultProfile()
+    {
+        try {
+            return $this->loadProfile($this->defaultProfile);
+        } catch (PriceNotFoundException $e) {
+            throw PriceNotFoundException::defaultProfileNotFound($this->defaultProfile);
+        }
+    }
+
+    /**
+     * Creates a new price item and persists it to the database.
+     *
+     * @param  string    $identifier
+     * @param  string    $description
+     * @return PriceItem
+     */
     protected function registerNewItem($identifier, $description)
     {
-        $item = new \SclZfPriceManager\Entity\PriceItem();
+        $item = new PriceItem();
 
         $item->setIdentifier($identifier);
         $item->setDescription($description);
@@ -118,30 +152,11 @@ class PriceService implements PriceServiceInterface
     }
 
 
-
-
-
-    /**
-     * Return the default price profile.
-     *
-     * @return \SclZfPriceManager\Entity\Profile
-     */
-    public function getDefaultProfile()
-    {
-        $profile = $this->profileMapper->findById($this->defaultProfile);
-
-        if (!$profile) {
-            throw PriceNotFoundException::defaultProfileNotFound($this->defaultProfile);
-        }
-
-        return $profile;
-    }
-
     /**
      * Load the default price for the given item.
      *
      * @param  PriceItem $item
-     * @return \SclZfPriceManager\Entity\Price|null
+     * @return Price|null
      */
     protected function getDefaultPrice(PriceItem $item)
     {
@@ -156,7 +171,7 @@ class PriceService implements PriceServiceInterface
      *
      * @param  PriceItem $item
      * @param  mixed     $profileId
-     * @return \SclZfPriceManager\Entity\Price|null
+     * @return Price|null
      */
     protected function getActivePrice(PriceItem $item, $profileId)
     {
@@ -172,12 +187,11 @@ class PriceService implements PriceServiceInterface
     /**
      * Returns the price entity for the given item and profile.
      *
-     * @param  PriceItem                            $item
-     * @param  mixed                                $profileId
-     * @return \SclZfPriceManager\Entity\Price|null
-     * @throws PriceNotFoundException               If requested profile was not found.
+     * @param  mixed                  $profileId
+     * @return Price|null
+     * @throws PriceNotFoundException If requested profile was not found.
      */
-    protected function loadPriceForProfile(PriceItem $item, $profileId)
+    protected function loadProfile($profileId)
     {
         $profile = $this->profileMapper->findById($profileId);
 
@@ -185,7 +199,23 @@ class PriceService implements PriceServiceInterface
             throw PriceNotFoundException::profileNotFound($profileId);
         }
 
-        return $this->priceMapper->findForItemAndProfile($item, $profile);
+        return $profile;
+    }
+
+    /**
+     * Returns the price entity for the given item and profile.
+     *
+     * @param  PriceItem              $item
+     * @param  mixed                  $profileId
+     * @return Price|null
+     * @throws PriceNotFoundException If requested profile was not found.
+     */
+    protected function loadPriceForProfile(PriceItem $item, $profileId)
+    {
+        return $this->priceMapper->findForItemAndProfile(
+            $item,
+            $this->loadProfile($profileId)
+        );
     }
 
     /**
