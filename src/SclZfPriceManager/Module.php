@@ -47,9 +47,65 @@ class Module implements
             'invokables' => array(
             ),
             'factories' => array(
+                // Options
                 'SclZfPriceManager\Options\PriceManagerOptionsInterface' => function ($sm) {
-                    return new SclZfPriceManager\Options\PriceManagerOptions(
+                    return new \SclZfPriceManager\Options\PriceManagerOptions(
                         $sm->get('Config')['scl_zf_price_manager']
+                    );
+                },
+
+                // Mappers
+                'SclZfPriceManager\Mapper\ItemMapperInterface' => function ($sm) {
+                    return new \SclZfPriceManager\Mapper\DoctrineItemMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
+                'SclZfPriceManager\Mapper\PriceMapperInterface' => function ($sm) {
+                    return new \SclZfPriceManager\Mapper\DoctrinePriceMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
+                'SclZfPriceManager\Mapper\ProfileMapperInterface' => function ($sm) {
+                    return new \SclZfPriceManager\Mapper\DoctrineProfileMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
+                'SclZfPriceManager\Mapper\MapperTaxInterface' => function ($sm) {
+                    return new \SclZfPriceManager\Mapper\DoctrineTaxMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
+                'SclZfPriceManager\Mapper\VariationMapperInterface' => function ($sm) {
+                    return new \SclZfPriceManager\Mapper\DoctrineVariationMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
+
+                // Services
+                'SclZfPriceManager\Service\ItemService' => function ($sm) {
+                    return new \SclZfPriceManager\Service\ItemService(
+                        $sm->get('SclZfPriceManager\Mapper\ItemMapperInterface')
+                    );
+                },
+                'SclZfPriceManager\Service\PriceService' => function ($sm) {
+                    $options = $sm->get('SclZfPriceManager\Options\PriceManagerOptionsInterface');
+
+                    return new \SclZfPriceManager\Service\PriceService(
+                        $options->getDefaultProfile(),
+                        $sm->get('SclZfPriceManager\Service\VariationService'),
+                        $sm->get('SclZfPriceManager\Mapper\ProfileMapperInterface'),
+                        $sm->get('SclZfPriceManager\Mapper\PriceMapperInterface')
+                    );
+                },
+                'SclZfPriceManager\Service\VariationService' => function ($sm) {
+                    return new \SclZfPriceManager\Service\VariationService(
+                        $sm->get('SclZfPriceManager\Service\ItemService'),
+                        $sm->get('SclZfPriceManager\Mapper\VariationMapperInterface')
                     );
                 },
             ),

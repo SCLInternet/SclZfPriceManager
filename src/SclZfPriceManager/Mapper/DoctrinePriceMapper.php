@@ -3,8 +3,10 @@
 namespace SclZfPriceManager\Mapper;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use SclZfUtilitiesTest\Mapper\GenericDoctrineMapper;
+use SclZfUtilities\Mapper\GenericDoctrineMapper;
 use SclZfUtilities\Doctrine\FlushLock;
+use SclZfPriceManager\Entity\Profile;
+use SclZfPriceManager\Entity\Variation;
 
 /**
  * DoctrineCustomerMapper.
@@ -28,7 +30,27 @@ class DoctrinePriceMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclBusiness\Entity\Price'
+            'SclZfPriceManager\Entity\Price'
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param  Profile $profile
+     * @param  Variation $variation
+     *
+     * @return \SclZfPriceManager\Entity\Price
+     */
+    public function findByProfileAndVariation(Profile $profile, Variation $variation)
+    {
+        return $this->singleEntity(
+            $this->findBy(
+                array(
+                    'profile' => $profile,
+                    'variation' => $variation,
+                )
+            )
         );
     }
 }

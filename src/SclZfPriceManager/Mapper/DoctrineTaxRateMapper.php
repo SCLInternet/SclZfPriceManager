@@ -28,7 +28,7 @@ class DoctrineTaxRateMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclBusiness\Entity\TaxRate'
+            'SclZfPriceManager\Entity\TaxRate'
         );
     }
 }

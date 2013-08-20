@@ -28,7 +28,20 @@ class DoctrineItemMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclBusiness\Entity\Item'
+            'SclZfPriceManager\Entity\Item'
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param  string $identifier
+     * @return \SclZfPriceManager\Entity\Item
+     */
+    public function findByIdentifier($identifier)
+    {
+        return $this->singleEntity(
+            $this->findBy(array('identifier' => $identifier))
         );
     }
 }

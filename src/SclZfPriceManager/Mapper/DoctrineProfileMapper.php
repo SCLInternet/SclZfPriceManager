@@ -28,7 +28,7 @@ class DoctrineProfileMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclBusiness\Entity\Profile'
+            'SclZfPriceManager\Entity\Profile'
         );
     }
 }
