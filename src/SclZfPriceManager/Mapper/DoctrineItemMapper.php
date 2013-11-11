@@ -3,8 +3,8 @@
 namespace SclZfPriceManager\Mapper;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use SclZfUtilities\Mapper\GenericDoctrineMapper;
-use SclZfUtilities\Doctrine\FlushLock;
+use SclZfGenericMapper\DoctrineMapper as GenericDoctrineMapper;
+use SclZfGenericMapper\Doctrine\FlushLock;
 
 /**
  * DoctrineCustomerMapper.
@@ -26,9 +26,9 @@ class DoctrineItemMapper extends GenericDoctrineMapper implements
         $entityName = null
     ) {
         parent::__construct(
+            new \SclZfPriceManager\Entity\Item(),
             $entityManager,
-            $flushLock,
-            'SclZfPriceManager\Entity\Item'
+            $flushLock
         );
     }
 

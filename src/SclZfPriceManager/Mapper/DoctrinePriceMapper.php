@@ -3,8 +3,8 @@
 namespace SclZfPriceManager\Mapper;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use SclZfUtilities\Mapper\GenericDoctrineMapper;
-use SclZfUtilities\Doctrine\FlushLock;
+use SclZfGenericMapper\DoctrineMapper as GenericDoctrineMapper;
+use SclZfGenericMapper\Doctrine\FlushLock;
 use SclZfPriceManager\Entity\Profile;
 use SclZfPriceManager\Entity\Variation;
 
@@ -28,9 +28,9 @@ class DoctrinePriceMapper extends GenericDoctrineMapper implements
         $entityName = null
     ) {
         parent::__construct(
+            new \SclZfPriceManager\Entity\Price(),
             $entityManager,
-            $flushLock,
-            'SclZfPriceManager\Entity\Price'
+            $flushLock
         );
     }
 

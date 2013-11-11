@@ -2,7 +2,7 @@
 
 namespace SclZfPriceManager\Mapper;
 
-use SclZfUtilities\Mapper\GenericMapperInterface;
+use SclZfGenericMapper\MapperInterface as GenericMapperInterface;
 use SclZfPriceManager\Entity\Profile;
 use SclZfPriceManager\Entity\Variation;
 

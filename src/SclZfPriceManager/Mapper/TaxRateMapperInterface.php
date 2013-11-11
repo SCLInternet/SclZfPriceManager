@@ -2,7 +2,7 @@
 
 namespace SclZfPriceManager\Mapper;
 
-use SclZfUtilities\Mapper\GenericMapperInterface;
+use SclZfGenericMapper\MapperInterface as GenericMapperInterface;
 
 /**
  * Interface for mapper for {@see SclZfPriceManager\Entity\TaxRate}.

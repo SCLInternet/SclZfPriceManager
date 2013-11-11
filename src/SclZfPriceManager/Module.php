@@ -58,31 +58,31 @@ class Module implements
                 'SclZfPriceManager\Mapper\ItemMapperInterface' => function ($sm) {
                     return new \SclZfPriceManager\Mapper\DoctrineItemMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
                 'SclZfPriceManager\Mapper\PriceMapperInterface' => function ($sm) {
                     return new \SclZfPriceManager\Mapper\DoctrinePriceMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
                 'SclZfPriceManager\Mapper\ProfileMapperInterface' => function ($sm) {
                     return new \SclZfPriceManager\Mapper\DoctrineProfileMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
                 'SclZfPriceManager\Mapper\MapperTaxInterface' => function ($sm) {
                     return new \SclZfPriceManager\Mapper\DoctrineTaxMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
                 'SclZfPriceManager\Mapper\VariationMapperInterface' => function ($sm) {
                     return new \SclZfPriceManager\Mapper\DoctrineVariationMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
 
