@@ -23,7 +23,7 @@ class Item
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * A unique string used to find this price object.
@@ -32,7 +32,7 @@ class Item
      *
      * @ORM\Column(type="string", unique=true)
      */
-    protected $identifier;
+    private $identifier;
 
     /**
      * A more readable description for what this price is for.
@@ -41,7 +41,7 @@ class Item
      *
      * @ORM\Column(type="string")
      */
-    protected $description;
+    private $description;
 
     /**
      * Sets the value of id

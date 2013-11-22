@@ -23,7 +23,7 @@ class Variation
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * The item that this is a variation of.
@@ -32,25 +32,25 @@ class Variation
      *
      * @ORM\ManyToOne(targetEntity="Item")
      */
-    protected $item;
+    private $item;
 
     /**
      * A unique string used to find this price object.
      *
      * @var string
      *
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string")
      */
-    protected $identifier;
+    private $identifier;
 
     /**
      * A more readable description for what this price is for.
      *
      * @var mixed
      *
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string")
      */
-    protected $description;
+    private $description;
 
     /**
      * Sets the value of id

@@ -23,7 +23,7 @@ class TaxRate
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * A decent name for the tax rate.
@@ -32,7 +32,7 @@ class TaxRate
      *
      * @ORM\Column(type="string", unique=true)
      */
-    protected $name;
+    private $name;
 
     /**
      * The tax rate as a percent.
@@ -41,7 +41,7 @@ class TaxRate
      *
      * @ORM\Column(type="decimal", precision=6, scale=3)
      */
-    protected $rate;
+    private $rate;
 
     /**
      * Sets the value of id

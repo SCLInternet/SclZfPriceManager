@@ -23,7 +23,7 @@ class Price
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * The item this price is for.
@@ -32,7 +32,7 @@ class Price
      *
      * @ORM\ManyToOne(targetEntity="Variation")
      */
-    protected $variation;
+    private $variation;
 
     /**
      * The profile this price belongs in.
@@ -41,7 +41,7 @@ class Price
      *
      * @ORM\ManyToOne(targetEntity="Profile")
      */
-    protected $profile;
+    private $profile;
 
     /**
      * The actual amount.
@@ -50,7 +50,7 @@ class Price
      *
      * @ORM\Column(type="decimal", precision=11, scale=2)
      */
-    protected $amount;
+    private $amount;
 
     /**
      * The tax rate to be applied to this item.
@@ -59,7 +59,7 @@ class Price
      *
      * @ORM\ManyToOne(targetEntity="TaxRate")
      */
-    protected $taxRate;
+    private $taxRate;
 
     /**
      * Sets the value of id

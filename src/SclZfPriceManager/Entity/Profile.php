@@ -23,7 +23,7 @@ class Profile
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * The name of the profile.
@@ -32,7 +32,7 @@ class Profile
      *
      * @ORM\Column(type="string", unique=true)
      */
-    protected $name;
+    private $name;
 
     /**
      * Sets the value of id
