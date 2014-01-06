@@ -3,270 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "128778d05d641fe09b920ecf26533986",
+    "hash": "8efcd0c49e939534c6c68c7c854a3c0d",
     "packages": [
-        {
-            "name": "sclinternet/currency",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SCLInternet/SclCurrency.git",
-                "reference": "7b37531bd515018e47bc88fbd8c852dd95bf98b5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SCLInternet/SclCurrency/zipball/7b37531bd515018e47bc88fbd8c852dd95bf98b5",
-                "reference": "7b37531bd515018e47bc88fbd8c852dd95bf98b5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "henrikbjorn/phpspec-code-coverage": "dev-master",
-                "phpmd/phpmd": "1.4.0",
-                "phpspec/phpspec": "2.0.*@dev",
-                "satooshi/php-coveralls": "dev-master",
-                "squizlabs/php_codesniffer": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "SCL\\Currency\\": "src/",
-                    "spec\\SCL\\": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tom Oram",
-                    "email": "tom@x2k.co.uk",
-                    "homepage": "http://github.com/tomphp"
-                }
-            ],
-            "description": "Library of classes for dealing with currency",
-            "homepage": "https://github.com/SCLInternet/SclCurrency",
-            "time": "2014-01-06 13:06:49"
-        },
-        {
-            "name": "sclinternet/scl-zf-currency",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SCLInternet/SclZfCurrency.git",
-                "reference": "d845899b9e1abee093f8816966b6272f90feb08a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SCLInternet/SclZfCurrency/zipball/d845899b9e1abee093f8816966b6272f90feb08a",
-                "reference": "d845899b9e1abee093f8816966b6272f90feb08a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "sclinternet/currency": "dev-master",
-                "zendframework/zendframework": ">=2.2"
-            },
-            "require-dev": {
-                "phpmd/phpmd": "1.4.0",
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "dev-master",
-                "sclinternet/scl-test": "dev-master",
-                "squizlabs/php_codesniffer": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "SCL\\ZF2\\Currency": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tom Oram",
-                    "email": "tom@x2k.co.uk",
-                    "homepage": "http://github.com/tomphp"
-                }
-            ],
-            "description": "Module to integrate SclCurrency into Zend Framework 2 projects",
-            "homepage": "https://github.com/SCLInternet/SclZfCurrency",
-            "time": "2014-01-03 13:41:41"
-        },
-        {
-            "name": "sclinternet/scl-zf-generic-mapper",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SCLInternet/SclZfGenericMapper.git",
-                "reference": "c61c61546bfbc07e9c9a4b425e8e02fd7182d80b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SCLInternet/SclZfGenericMapper/zipball/c61c61546bfbc07e9c9a4b425e8e02fd7182d80b",
-                "reference": "c61c61546bfbc07e9c9a4b425e8e02fd7182d80b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "zendframework/zendframework": "2.*"
-            },
-            "require-dev": {
-                "doctrine/doctrine-orm-module": "0.*",
-                "phpmd/phpmd": "1.4.0",
-                "phpunit/dbunit": ">=1.2",
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "dev-master",
-                "squizlabs/php_codesniffer": "1.*",
-                "zf-commons/zfc-base": "*"
-            },
-            "suggest": {
-                "doctrine/doctrine-orm-module": "Doctrine ORM module",
-                "zf-commons/zfc-base": "Required for the ZendDbMapper"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "SclZfGenericMapper": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tom Oram",
-                    "email": "tom@scl.co.uk",
-                    "homepage": "http://github.com/tomphp"
-                }
-            ],
-            "description": "Simple mapper base classes and interfaces for quick implementation of database layers",
-            "homepage": "https://github.com/SCLInternet/SclZfGenericMapper",
-            "time": "2013-12-06 11:21:46"
-        },
-        {
-            "name": "zendframework/zendframework",
-            "version": "2.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/zf2.git",
-                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zf2/zipball/4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
-                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "replace": {
-                "zendframework/zend-authentication": "self.version",
-                "zendframework/zend-barcode": "self.version",
-                "zendframework/zend-cache": "self.version",
-                "zendframework/zend-captcha": "self.version",
-                "zendframework/zend-code": "self.version",
-                "zendframework/zend-config": "self.version",
-                "zendframework/zend-console": "self.version",
-                "zendframework/zend-crypt": "self.version",
-                "zendframework/zend-db": "self.version",
-                "zendframework/zend-debug": "self.version",
-                "zendframework/zend-di": "self.version",
-                "zendframework/zend-dom": "self.version",
-                "zendframework/zend-escaper": "self.version",
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-feed": "self.version",
-                "zendframework/zend-file": "self.version",
-                "zendframework/zend-filter": "self.version",
-                "zendframework/zend-form": "self.version",
-                "zendframework/zend-http": "self.version",
-                "zendframework/zend-i18n": "self.version",
-                "zendframework/zend-inputfilter": "self.version",
-                "zendframework/zend-json": "self.version",
-                "zendframework/zend-ldap": "self.version",
-                "zendframework/zend-loader": "self.version",
-                "zendframework/zend-log": "self.version",
-                "zendframework/zend-mail": "self.version",
-                "zendframework/zend-math": "self.version",
-                "zendframework/zend-memory": "self.version",
-                "zendframework/zend-mime": "self.version",
-                "zendframework/zend-modulemanager": "self.version",
-                "zendframework/zend-mvc": "self.version",
-                "zendframework/zend-navigation": "self.version",
-                "zendframework/zend-paginator": "self.version",
-                "zendframework/zend-permissions-acl": "self.version",
-                "zendframework/zend-permissions-rbac": "self.version",
-                "zendframework/zend-progressbar": "self.version",
-                "zendframework/zend-resources": "self.version",
-                "zendframework/zend-serializer": "self.version",
-                "zendframework/zend-server": "self.version",
-                "zendframework/zend-servicemanager": "self.version",
-                "zendframework/zend-session": "self.version",
-                "zendframework/zend-soap": "self.version",
-                "zendframework/zend-stdlib": "self.version",
-                "zendframework/zend-tag": "self.version",
-                "zendframework/zend-test": "self.version",
-                "zendframework/zend-text": "self.version",
-                "zendframework/zend-uri": "self.version",
-                "zendframework/zend-validator": "self.version",
-                "zendframework/zend-version": "self.version",
-                "zendframework/zend-view": "self.version",
-                "zendframework/zend-xmlrpc": "self.version"
-            },
-            "require-dev": {
-                "doctrine/annotations": ">=1.0",
-                "fabpot/php-cs-fixer": "*@dev",
-                "ircmaxell/random-lib": "dev-master",
-                "ircmaxell/security-lib": "dev-master",
-                "ocramius/proxy-manager": "0.4.*",
-                "phpunit/phpunit": "3.7.*"
-            },
-            "suggest": {
-                "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
-                "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
-                "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
-                "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
-                "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
-                "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
-            },
-            "bin": [
-                "bin/classmap_generator.php",
-                "bin/pluginmap_generator.php",
-                "bin/templatemap_generator.php"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Zend\\": "library/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Zend Framework 2",
-            "homepage": "http://framework.zend.com/",
-            "keywords": [
-                "framework",
-                "zf2"
-            ],
-            "time": "2013-10-31 15:48:16"
-        }
-    ],
-    "packages-dev": [
         {
             "name": "doctrine/annotations",
             "version": "v1.1.2",
@@ -979,6 +717,321 @@
             "time": "2013-11-12 12:40:13"
         },
         {
+            "name": "sclinternet/currency",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SCLInternet/SclCurrency.git",
+                "reference": "7b37531bd515018e47bc88fbd8c852dd95bf98b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SCLInternet/SclCurrency/zipball/7b37531bd515018e47bc88fbd8c852dd95bf98b5",
+                "reference": "7b37531bd515018e47bc88fbd8c852dd95bf98b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "henrikbjorn/phpspec-code-coverage": "dev-master",
+                "phpmd/phpmd": "1.4.0",
+                "phpspec/phpspec": "2.0.*@dev",
+                "satooshi/php-coveralls": "dev-master",
+                "squizlabs/php_codesniffer": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SCL\\Currency\\": "src/",
+                    "spec\\SCL\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Oram",
+                    "email": "tom@x2k.co.uk",
+                    "homepage": "http://github.com/tomphp"
+                }
+            ],
+            "description": "Library of classes for dealing with currency",
+            "homepage": "https://github.com/SCLInternet/SclCurrency",
+            "time": "2014-01-06 13:06:49"
+        },
+        {
+            "name": "sclinternet/scl-zf-currency",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SCLInternet/SclZfCurrency.git",
+                "reference": "90f88936c6d7d211499f412ccda5e8455fad71c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SCLInternet/SclZfCurrency/zipball/90f88936c6d7d211499f412ccda5e8455fad71c1",
+                "reference": "90f88936c6d7d211499f412ccda5e8455fad71c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "sclinternet/currency": "dev-master",
+                "zendframework/zendframework": ">=2.2"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "1.4.0",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "dev-master",
+                "sclinternet/scl-test": "dev-master",
+                "squizlabs/php_codesniffer": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SCL\\ZF2\\Currency": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Oram",
+                    "email": "tom@x2k.co.uk",
+                    "homepage": "http://github.com/tomphp"
+                }
+            ],
+            "description": "Module to integrate SclCurrency into Zend Framework 2 projects",
+            "homepage": "https://github.com/SCLInternet/SclZfCurrency",
+            "time": "2014-01-06 15:44:01"
+        },
+        {
+            "name": "sclinternet/scl-zf-generic-mapper",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SCLInternet/SclZfGenericMapper.git",
+                "reference": "c61c61546bfbc07e9c9a4b425e8e02fd7182d80b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SCLInternet/SclZfGenericMapper/zipball/c61c61546bfbc07e9c9a4b425e8e02fd7182d80b",
+                "reference": "c61c61546bfbc07e9c9a4b425e8e02fd7182d80b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "zendframework/zendframework": "2.*"
+            },
+            "require-dev": {
+                "doctrine/doctrine-orm-module": "0.*",
+                "phpmd/phpmd": "1.4.0",
+                "phpunit/dbunit": ">=1.2",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "dev-master",
+                "squizlabs/php_codesniffer": "1.*",
+                "zf-commons/zfc-base": "*"
+            },
+            "suggest": {
+                "doctrine/doctrine-orm-module": "Doctrine ORM module",
+                "zf-commons/zfc-base": "Required for the ZendDbMapper"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SclZfGenericMapper": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Oram",
+                    "email": "tom@scl.co.uk",
+                    "homepage": "http://github.com/tomphp"
+                }
+            ],
+            "description": "Simple mapper base classes and interfaces for quick implementation of database layers",
+            "homepage": "https://github.com/SCLInternet/SclZfGenericMapper",
+            "time": "2013-12-06 11:21:46"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v2.4.1",
+            "target-dir": "Symfony/Component/Console",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Console.git",
+                "reference": "4c1ed2ff514bd85ee186eebb010ccbdeeab05af7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/4c1ed2ff514bd85ee186eebb010ccbdeeab05af7",
+                "reference": "4c1ed2ff514bd85ee186eebb010ccbdeeab05af7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "suggest": {
+                "symfony/event-dispatcher": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Console\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-01-01 08:14:50"
+        },
+        {
+            "name": "zendframework/zendframework",
+            "version": "2.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zf2.git",
+                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zf2/zipball/4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "replace": {
+                "zendframework/zend-authentication": "self.version",
+                "zendframework/zend-barcode": "self.version",
+                "zendframework/zend-cache": "self.version",
+                "zendframework/zend-captcha": "self.version",
+                "zendframework/zend-code": "self.version",
+                "zendframework/zend-config": "self.version",
+                "zendframework/zend-console": "self.version",
+                "zendframework/zend-crypt": "self.version",
+                "zendframework/zend-db": "self.version",
+                "zendframework/zend-debug": "self.version",
+                "zendframework/zend-di": "self.version",
+                "zendframework/zend-dom": "self.version",
+                "zendframework/zend-escaper": "self.version",
+                "zendframework/zend-eventmanager": "self.version",
+                "zendframework/zend-feed": "self.version",
+                "zendframework/zend-file": "self.version",
+                "zendframework/zend-filter": "self.version",
+                "zendframework/zend-form": "self.version",
+                "zendframework/zend-http": "self.version",
+                "zendframework/zend-i18n": "self.version",
+                "zendframework/zend-inputfilter": "self.version",
+                "zendframework/zend-json": "self.version",
+                "zendframework/zend-ldap": "self.version",
+                "zendframework/zend-loader": "self.version",
+                "zendframework/zend-log": "self.version",
+                "zendframework/zend-mail": "self.version",
+                "zendframework/zend-math": "self.version",
+                "zendframework/zend-memory": "self.version",
+                "zendframework/zend-mime": "self.version",
+                "zendframework/zend-modulemanager": "self.version",
+                "zendframework/zend-mvc": "self.version",
+                "zendframework/zend-navigation": "self.version",
+                "zendframework/zend-paginator": "self.version",
+                "zendframework/zend-permissions-acl": "self.version",
+                "zendframework/zend-permissions-rbac": "self.version",
+                "zendframework/zend-progressbar": "self.version",
+                "zendframework/zend-resources": "self.version",
+                "zendframework/zend-serializer": "self.version",
+                "zendframework/zend-server": "self.version",
+                "zendframework/zend-servicemanager": "self.version",
+                "zendframework/zend-session": "self.version",
+                "zendframework/zend-soap": "self.version",
+                "zendframework/zend-stdlib": "self.version",
+                "zendframework/zend-tag": "self.version",
+                "zendframework/zend-test": "self.version",
+                "zendframework/zend-text": "self.version",
+                "zendframework/zend-uri": "self.version",
+                "zendframework/zend-validator": "self.version",
+                "zendframework/zend-version": "self.version",
+                "zendframework/zend-view": "self.version",
+                "zendframework/zend-xmlrpc": "self.version"
+            },
+            "require-dev": {
+                "doctrine/annotations": ">=1.0",
+                "fabpot/php-cs-fixer": "*@dev",
+                "ircmaxell/random-lib": "dev-master",
+                "ircmaxell/security-lib": "dev-master",
+                "ocramius/proxy-manager": "0.4.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
+                "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
+                "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
+                "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
+                "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
+                "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
+            },
+            "bin": [
+                "bin/classmap_generator.php",
+                "bin/pluginmap_generator.php",
+                "bin/templatemap_generator.php"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Zend\\": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Zend Framework 2",
+            "homepage": "http://framework.zend.com/",
+            "keywords": [
+                "framework",
+                "zf2"
+            ],
+            "time": "2013-10-31 15:48:16"
+        }
+    ],
+    "packages-dev": [
+        {
             "name": "guzzle/guzzle",
             "version": "v3.8.0",
             "source": {
@@ -1609,6 +1662,48 @@
             "time": "2013-07-25 11:22:39"
         },
         {
+            "name": "sclinternet/scl-test",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SCLInternet/SclTest.git",
+                "reference": "5e6d239b36d2696d6026f7d64eeae5a51ca46fd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SCLInternet/SclTest/zipball/5e6d239b36d2696d6026f7d64eeae5a51ca46fd7",
+                "reference": "5e6d239b36d2696d6026f7d64eeae5a51ca46fd7",
+                "shasum": ""
+            },
+            "require": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "1.4.0",
+                "squizlabs/php_codesniffer": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SclTest": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Oram",
+                    "email": "tom@x2k.co.uk",
+                    "homepage": "http://github.com/tomphp"
+                }
+            ],
+            "description": "Extensions to PHP for use in SCL projects.",
+            "homepage": "https://github.com/SCLInternet/SclTest",
+            "time": "2013-12-20 12:42:59"
+        },
+        {
             "name": "squizlabs/php_codesniffer",
             "version": "1.5.1",
             "source": {
@@ -1723,59 +1818,6 @@
                 }
             ],
             "description": "Symfony Config Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-01-01 08:14:50"
-        },
-        {
-            "name": "symfony/console",
-            "version": "v2.4.1",
-            "target-dir": "Symfony/Component/Console",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Console.git",
-                "reference": "4c1ed2ff514bd85ee186eebb010ccbdeeab05af7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/4c1ed2ff514bd85ee186eebb010ccbdeeab05af7",
-                "reference": "4c1ed2ff514bd85ee186eebb010ccbdeeab05af7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "symfony/event-dispatcher": "~2.1"
-            },
-            "suggest": {
-                "symfony/event-dispatcher": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Console\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
             "time": "2014-01-01 08:14:50"
         },
@@ -2146,6 +2188,7 @@
         "sclinternet/scl-zf-currency": 20,
         "sclinternet/scl-zf-generic-mapper": 20,
         "zf-commons/zfc-user-doctrine-orm": 20,
+        "sclinternet/scl-test": 20,
         "satooshi/php-coveralls": 20
     },
     "platform": {

@@ -3,6 +3,9 @@
 return array(
     'modules' => array(
         'SCL\\ZF2\\Currency',
+        'DoctrineModule',
+        'DoctrineORMModule',
+        'SclZfGenericMapper',
         'SclZfPriceManager',
     ),
     'module_listener_options' => array(

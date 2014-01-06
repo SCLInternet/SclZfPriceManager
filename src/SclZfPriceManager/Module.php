@@ -108,7 +108,8 @@ class Module implements
                         $options->getDefaultProfile(),
                         $sm->get('SclZfPriceManager\Service\VariationService'),
                         $sm->get('SclZfPriceManager\Mapper\ProfileMapperInterface'),
-                        $sm->get('SclZfPriceManager\Mapper\PriceMapperInterface')
+                        $sm->get('SclZfPriceManager\Mapper\PriceMapperInterface'),
+                        $sm->get('scl_currency.taxed_price_factory')
                     );
                 },
                 'SclZfPriceManager\Service\VariationService' => function ($sm) {
