@@ -47,6 +47,15 @@ class Module implements
             'invokables' => array(
             ),
             'factories' => array(
+                'scl_zf_pricemanager.money_factory' => function ($sm) {
+                    $factory = \SCL\Currency\MoneyFactory::createDefaultInstance();
+
+                    $factory->setDefaultCurrency(
+                        \SCL\Currency\CurrencyFactory::createDefaultInstance()->create('GBP')
+                    );
+                    return $factory;
+                },
+
                 // Options
                 'SclZfPriceManager\Options\PriceManagerOptionsInterface' => function ($sm) {
                     return new \SclZfPriceManager\Options\PriceManagerOptions(

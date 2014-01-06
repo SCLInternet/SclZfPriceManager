@@ -9,8 +9,6 @@ use SclZfPriceManager\Entity\Variation;
 /**
  * Unit tests for {@see VariationService}.
  *
- * @covers SclZfPriceManager\Service\VariationService
- *
  * @author Tom Oram <tom@scl.co.uk>
  */
 class VariationServiceTest extends \PHPUnit_Framework_TestCase

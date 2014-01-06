@@ -8,8 +8,6 @@ use SclZfPriceManager\Entity\Item;
 /**
  * Unit tests for {@see ItemService}.
  *
- * @covers SclZfPriceManager\Service\ItemService
- *
  * @author Tom Oram <tom@scl.co.uk>
  */
 class ItemServiceTest extends \PHPUnit_Framework_TestCase

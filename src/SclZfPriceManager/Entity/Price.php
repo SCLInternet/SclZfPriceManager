@@ -48,9 +48,9 @@ class Price
      *
      * @var float
      *
-     * @ORM\Column(type="decimal", precision=11, scale=2)
+     * @ORM\Column(type="integer")
      */
-    private $amount;
+    private $amount = 0;
 
     /**
      * The tax rate to be applied to this item.
@@ -65,12 +65,10 @@ class Price
      * Sets the value of id
      *
      * @param  int $id
-     * @return self
      */
     public function setId($id)
     {
         $this->id = (int) $id;
-        return $this;
     }
 
     /**
@@ -87,12 +85,10 @@ class Price
      * Sets the value of variation
      *
      * @param  Variation $variation
-     * @return self
      */
     public function setVariation(Variation $variation)
     {
         $this->variation = $variation;
-        return $this;
     }
 
     /**
@@ -109,12 +105,10 @@ class Price
      * Sets the value of profile
      *
      * @param  Profile $profile
-     * @return self
      */
     public function setProfile(Profile $profile)
     {
         $this->profile = $profile;
-        return $this;
     }
 
     /**
@@ -131,12 +125,10 @@ class Price
      * Sets the value of amount
      *
      * @param  float $amount
-     * @return self
      */
     public function setAmount($amount)
     {
-        $this->amount = (float) $amount;
-        return $this;
+        $this->amount = (int) $amount;
     }
 
     /**
@@ -153,12 +145,10 @@ class Price
      * Sets the value of taxRate
      *
      * @param  TaxRate $taxRate
-     * @return self
      */
     public function setTaxRate(TaxRate $taxRate)
     {
         $this->taxRate = $taxRate;
-        return $this;
     }
 
     /**

@@ -16,24 +16,18 @@ use SclZfPriceManager\Mapper\VariationMapperInterface;
 class VariationService
 {
     /**
-     * itemService
-     *
      * @var ItemService
      */
-    protected $itemService;
+    private $itemService;
 
     /**
-     * variationMapper
-     *
      * @var VariationMapperInterface
      */
-    protected $variationMapper;
+    private $variationMapper;
 
     /**
-     * __construct
-     *
-     * @param  ItemService $itemService
-     * @param  VariationMapperInterface $variationMapper
+     * @param ItemService              $itemService
+     * @param VariationMapperInterface $variationMapper
      */
     public function __construct(
         ItemService $itemService,
@@ -46,11 +40,12 @@ class VariationService
     /**
      * Returns the requested variation or creates one if required.
      *
-     * @param  Item|string $itemOrIdentifer
-     * @param  string      $variationIdentifier
-     * @param  string      $variationDescription
-     * @param  string      $itemDescription
-     * @return Variation
+     * @param Item|string $itemOrIdentifer
+     * @param string      $variationIdentifier
+     * @param string      $variationDescription
+     * @param string      $itemDescription
+     *
+     * @return Variation|false
      */
     public function getVariation(
         $itemOrIdentifer,
@@ -69,14 +64,21 @@ class VariationService
 
         $variation = $this->variationMapper->findForItemByIdentifier($item, $variationIdentifier);
 
-        if ($variation) {
-            return $variation;
+        if (!$variation && !$fetchOnly) {
+            $variation = $this->createNewVariation($item, $variationIdentifier, $variationDescription);
         }
 
-        if ($fetchOnly) {
-            return false;
-        }
+        return $variation ?: false;
+    }
 
+    /**
+     * @param string $variationIdentifier
+     * @param string $variationDescription
+     *
+     * @return Variation
+     */
+    private function createNewVariation(Item $item, $variationIdentifier, $variationDescription)
+    {
         $variation = new Variation();
 
         $variation->setItem($item);
@@ -91,23 +93,34 @@ class VariationService
     /**
      * Takes either an item or an item indentifier and returns the item.
      *
-     * @param  Item|string $itemOrIdentifer
+     * @param Item|string $itemOrIdentifer
+     *
      * @return Item
      */
-    protected function itemFromItemOrIdentifier($itemOrIdentifer, $fetchOnly)
+    private function itemFromItemOrIdentifier($itemOrIdentifer, $fetchOnly)
     {
-        if (is_object($itemOrIdentifer) &&  !$itemOrIdentifer instanceof Item) {
+        $this->assertIsItemOrIdentifier($itemOrIdentifer);
+
+        if (!is_object($itemOrIdentifer)) {
+            $itemOrIdentifer = $this->itemService->getItem($itemOrIdentifer, $fetchOnly);
+        }
+
+        return $itemOrIdentifer;
+    }
+
+    /**
+     * @param Item|string $itemOrIdentifer
+     *
+     * @throws InvalidArgumentException
+     */
+    private function assertIsItemOrIdentifier($itemOrIdentifer)
+    {
+        if (is_object($itemOrIdentifer) && !$itemOrIdentifer instanceof Item) {
             throw InvalidArgumentException::badType(
                 '$itemOrIdentifer',
                 '\SclZfPriceManager\Entity\Item or string',
                 $itemOrIdentifer
             );
         }
-
-        if (is_object($itemOrIdentifer)) {
-            return $itemOrIdentifer;
-        }
-
-        return $this->itemService->getItem($itemOrIdentifer, $fetchOnly);
     }
 }

@@ -11,6 +11,10 @@ use SclZfPriceManager\Mapper\ProfileMapperInterface;
 use SclZfPriceManager\Price;
 use SclZfPriceManager\Service\VariationService;
 use SclZfPriceManager\Entity\TaxRate;
+use SCL\Currency\TaxedPriceFactory;
+use SCL\Currency\Currency;
+use SCL\Currency\Money;
+use SCL\Currency\MoneyFactory;
 
 /**
  * Service to load and manipulate prices.
@@ -23,60 +27,48 @@ use SclZfPriceManager\Entity\TaxRate;
 class PriceService implements PriceServiceInterface
 {
     /**
-     * The ID of the default price profile.
-     *
      * @var int
      */
-    protected $defaultProfile;
+    private $defaultProfile;
 
     /**
-     * Price profile mapper.
-     *
      * @var ProfileMapperInterface
      */
-    protected $profileMapper;
+    private $profileMapper;
 
     /**
-     * Price object mapper.
-     *
      * @var PriceMapperInterface
      */
-    protected $priceMapper;
+    private $priceMapper;
 
     /**
-     * The variation service.
-     *
      * @var VariationService
      */
-    protected $variationService;
+    private $variationService;
 
     /**
-     * __construct
-     *
-     * @param  int                      $defaultProfile
-     * @param  VariationService         $variationService,
-     * @param  ProfileMapperInterface   $profileMapper
-     * @param  PriceMapperInterface     $priceMapper
+     * @var TaxedPriceFactory
+     */
+    private $priceFactory;
+
+    /**
+     * @param int $defaultProfile
      */
     public function __construct(
         $defaultProfile,
         VariationService $variationService,
         ProfileMapperInterface $profileMapper,
-        PriceMapperInterface $priceMapper
+        PriceMapperInterface $priceMapper,
+        TaxedPriceFactory $priceFactory
     ) {
-        $this->defaultProfile = $defaultProfile;
+        $this->defaultProfile   = $defaultProfile;
         $this->variationService = $variationService;
-        $this->profileMapper  = $profileMapper;
-        $this->priceMapper    = $priceMapper;
+        $this->profileMapper    = $profileMapper;
+        $this->priceMapper      = $priceMapper;
+        $this->priceFactory = $priceFactory;
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param  string                 $itemIdentifier
-     * @param  string                 $variationIdentifier
-     * @param  Profile                $profile
-     * @return Price
      * @throws PriceNotFoundException If the variation was not found.
      */
     public function getPrice(
@@ -107,30 +99,15 @@ class PriceService implements PriceServiceInterface
             return null;
         }
 
-        return $this->createPrice(
+        return $this->priceFactory->createFromUnitsAndRate(
             $price->getAmount(),
             $price->getTaxRate()->getRate()
         );
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * The item description is only set if the item is newly created otherwise
-     * it is not changed.
-     *
-     * @param  string                          $itemIdentifier
-     * @param  float                           $amount
-     * @param  TaxRate                         $taxRate
-     * @param  string                          $variationIdentifier
-     * @param  string                          $itemDescription
-     * @param  string                          $variationDescription
-     * @param  Profile                         $profile
-     * @return \SclZfPriceManager\Entity\Price
-     */
     public function savePrice(
         $itemIdentifier,
-        $amount,
+        Money $amount,
         TaxRate $taxRate,
         $variationIdentifier = null,
         $itemDescription = '',
@@ -155,7 +132,7 @@ class PriceService implements PriceServiceInterface
         $price->setVariation($variation);
         $price->setProfile($profile);
         $price->setTaxRate($taxRate);
-        $price->setAmount($amount);
+        $price->setAmount($amount->getUnits());
 
         $this->priceMapper->save($price);
 
@@ -163,8 +140,6 @@ class PriceService implements PriceServiceInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return Profile
      */
     public function getDefaultProfile()
@@ -179,10 +154,11 @@ class PriceService implements PriceServiceInterface
     /**
      * Load the default price for the given item.
      *
-     * @param  Variation $variation
+     * @param Variation $variation
+     *
      * @return Price|null
      */
-    protected function getDefaultPrice(Variation $variation)
+    private function getDefaultPrice(Variation $variation)
     {
         $profile = $this->getDefaultProfile();
 
@@ -193,11 +169,12 @@ class PriceService implements PriceServiceInterface
      * Returns the price entity for the given item and profile, will go
      * to the default if one is not found.
      *
-     * @param  Variation $variation
-     * @param  Profile   $profile
+     * @param Variation $variation
+     * @param Profile   $profile
+     *
      * @return Price|null
      */
-    protected function getActivePrice(Variation $variation, Profile $profile)
+    private function getActivePrice(Variation $variation, Profile $profile)
     {
         $price = $this->loadPriceForProfile($variation, $profile);
 
@@ -211,11 +188,13 @@ class PriceService implements PriceServiceInterface
     /**
      * Returns the price entity for the given item and profile.
      *
-     * @param  mixed                  $profileId
+     * @param mixed $profileId
+     *
      * @return Price|null
+     *
      * @throws PriceNotFoundException If requested profile was not found.
      */
-    protected function loadProfile($profileId)
+    private function loadProfile($profileId)
     {
         $profile = $this->profileMapper->findById($profileId);
 
@@ -229,30 +208,15 @@ class PriceService implements PriceServiceInterface
     /**
      * Returns the price entity for the given item and profile.
      *
-     * @param  Variation              $variation
-     * @param  Profile                $profile
+     * @param Variation $variation
+     * @param Profile   $profile
+     *
      * @return Price|null
+     *
      * @throws PriceNotFoundException If requested profile was not found.
      */
-    protected function loadPriceForProfile(Variation $variation, Profile $profile)
+    private function loadPriceForProfile(Variation $variation, Profile $profile)
     {
         return $this->priceMapper->findByProfileAndVariation($profile, $variation);
-    }
-
-    /**
-     * Creates a {@see Price} object and sets the values.
-     *
-     * @param  float $amount
-     * @param  float $taxRate
-     * @return Price
-     */
-    protected function createPrice($amount, $taxRate)
-    {
-        $price = new Price();
-
-        $price->setAmountExTax($amount);
-        $price->setTaxRate($taxRate);
-
-        return $price;
     }
 }

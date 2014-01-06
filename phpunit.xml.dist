@@ -9,6 +9,7 @@
         processIsolation="false"
         backupGlobals="false"
         syntaxCheck="true"
+        bootstrap="./tests/Bootstrap.php"
         >
     <testsuite name="UnitTests">
         <directory>./tests</directory>
@@ -18,7 +19,4 @@
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
-    <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
 </phpunit>

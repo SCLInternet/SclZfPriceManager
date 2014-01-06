@@ -3,11 +3,15 @@
 namespace SclZfPriceManagerTests\Service;
 
 use SclZfPriceManager\Service\PriceService;
+use SclZfPriceManager\Entity\Price as PriceEntity;
+use SCL\Currency\Currency;
+use SCL\Currency\Money;
+use SCL\Currency\MoneyFactory;
+use SCL\Currency\TaxedPriceFactory;
+use SCL\Currency\CurrencyFactory;
 
 /**
  * Unit tests for {@see PriceService}.
- *
- * @covers SclZfPriceManager\Service\PriceService
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
@@ -16,17 +20,21 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
     const DEFAULT_PROFILE = 7;
     const TEST_IDENTIFIER = 'test-indentifier';
 
-    protected $itemMapper;
+    private $itemMapper;
 
-    protected $itemService;
+    private $itemService;
 
-    protected $variationService;
+    private $variationService;
 
-    protected $profileMapper;
+    private $profileMapper;
 
-    protected $priceMapper;
+    private $priceMapper;
 
-    protected $taxRate;
+    private $taxRate;
+
+    private $priceFactory;
+
+    private $currency;
 
     /**
      * Set up the instance to be tested.
@@ -43,18 +51,21 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->priceMapper = $this->getMock('SclZfPriceManager\Mapper\PriceMapperInterface');
 
+        $this->priceFactory = TaxedPriceFactory::createDefaultInstance();
+
         $this->service = new PriceService(
             self::DEFAULT_PROFILE,
             $this->variationService,
             $this->profileMapper,
-            $this->priceMapper
+            $this->priceMapper,
+            $this->priceFactory
         );
 
         $this->taxRate = $this->getMock('SclZfPriceManager\Entity\TaxRate');
 
     }
 
-    public function testPriceServiceImplementsPriceServiceInterface()
+    public function test_implements_PriceServiceInterface()
     {
         $this->assertInstanceOf('SclZfPriceManager\Service\PriceServiceInterface', $this->service);
     }
@@ -65,46 +76,43 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
      *
      */
 
-    public function testGetPriceReturnsPrice()
+    public function test_getPrice_returns_TaxedPrice()
     {
         $this->setLoadingExpectations();
 
-        $this->assertInstanceOf('SclZfPriceManager\Price', $this->service->getPrice(self::TEST_IDENTIFIER));
+        $this->assertInstanceOf('SCL\Currency\TaxedPrice', $this->service->getPrice(self::TEST_IDENTIFIER));
     }
 
-    public function testGetPriceLoadsItemByIdentifier()
-    {
-        $this->setLoadingExpectations();
-
-        $this->service->getPrice(self::TEST_IDENTIFIER);
-    }
-
-    public function testGetPriceLoadsDefaultProfileWhenNoProfileSpecified()
+    public function test_getPrice_loads_items_by_identifier()
     {
         $this->setLoadingExpectations();
 
         $this->service->getPrice(self::TEST_IDENTIFIER);
     }
 
-    public function testGetPriceLoadsCorrectPriceEntity()
+    public function test_getPrice_loads_default_profile_when_no_profile_specified()
     {
         $this->setLoadingExpectations();
 
         $this->service->getPrice(self::TEST_IDENTIFIER);
     }
 
-    public function testGetPriceReturnsPriceWithCorrectAmount()
+    public function test_getPrice_loads_correct_price_entity()
     {
-        $amount     = 50.50;
-        $taxRate    = 17.5;
+        $this->setLoadingExpectations();
+
+        $this->service->getPrice(self::TEST_IDENTIFIER);
+    }
+
+    public function test_getPrice_returns_price_with_correct_amount()
+    {
+        $amount     = 5000;
+        $taxRate    = 20;
+        $taxAmount  = 1000;
 
         $priceEntity = $this->setLoadingExpectations();
 
-
-        $priceEntity->expects($this->any())
-                    ->method('getAmount')
-                    ->will($this->returnValue($amount));
-
+        $priceEntity->setAmount($amount);
 
         $this->taxRate->expects($this->any())
                       ->method('getRate')
@@ -112,11 +120,11 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
         $price = $this->service->getPrice(self::TEST_IDENTIFIER);
 
-        $this->assertEquals($amount, $price->getAmountExTax(), 'Amount is incorrect.');
-        $this->assertEquals($taxRate, $price->getTaxRate(), 'Tax rate is incorrect.');
+        $this->assertEquals($amount, $price->getAmount()->getUnits(), 'Amount is incorrect.');
+        $this->assertEquals($taxAmount, $price->getTax()->getUnits(), 'Tax amount is incorrect.');
     }
 
-    public function testGetPriceReturnsNullIfPriceEntityIsNotFound()
+    public function test_getPrice_returns_null_if_price_entity_is_not_found()
     {
         $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
@@ -130,17 +138,15 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->service->getPrice(self::TEST_IDENTIFIER));
     }
 
-    public function testGetPriceWithProfileRevertsToDefaultIfItemNotFound()
+    public function test_getPrice_with_profile_reverts_to_default_if_item_not_found()
     {
         $variation = $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
         $profile        = $this->getMock('SclZfPriceManager\Entity\Profile');
         $defaultProfile = $this->getMock('SclZfPriceManager\Entity\Profile');
-        $price          = $this->getMock('SclZfPriceManager\Entity\Price');
+        $price          = new PriceEntity();
 
-        $price->expects($this->any())
-              ->method('getTaxRate')
-              ->will($this->returnValue($this->taxRate));
+        $price->setTaxRate($this->taxRate);
 
         $this->priceMapper
              ->expects($this->at(0))
@@ -163,7 +169,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->getPrice(self::TEST_IDENTIFIER, null, $profile);
     }
 
-    public function testGetPriceThrowsWhenVariationNotFound()
+    public function test_getPrice_throws_when_variation_not_found()
     {
         $this->setExpectedException('SclZfPriceManager\Exception\PriceNotFoundException');
 
@@ -175,7 +181,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->getPrice(self::TEST_IDENTIFIER);
     }
 
-    public function testGetPriceThrowsWhenDefaultProfileIsNotFound()
+    public function test_getPrice_throws_when_default_profile_is_not_found()
     {
         $variation = $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
@@ -199,19 +205,21 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
      *
      */
 
-    public function testSavePriceReturnsPriceEntity()
+    public function test_savePrice_returns_price_entity()
     {
         $this->setExpectsToLoadDefaultProfile();
 
         $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
+        $amount = $this->createMoney(2100);
+
         $this->assertInstanceOf(
             'SclZfPriceManager\Entity\Price',
-            $this->service->savePrice(self::TEST_IDENTIFIER, 21, $this->taxRate)
+            $this->service->savePrice(self::TEST_IDENTIFIER, $amount, $this->taxRate)
         );
     }
 
-    public function testSavePriceFetchesVariation()
+    public function test_savePrice_fetches_variation()
     {
         $itemIdentifier       = 'item-id';
         $variationIdentifier  = 'var-id';
@@ -229,7 +237,7 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->service->savePrice(
             $itemIdentifier,
-            100,
+            $this->createMoney(10000),
             $this->taxRate,
             $variationIdentifier,
             $variationDescription,
@@ -237,16 +245,20 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSavePriceLoadsDefaultProfileWhenNoProfileIsGiven()
+    public function test_savePrice_loads_default_profile_when_no_profile_is_given()
     {
         $this->setExpectsToLoadDefaultProfile();
 
         $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
-        $this->service->savePrice(self::TEST_IDENTIFIER, 42, $this->taxRate);
+        $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(42),
+            $this->taxRate
+        );
     }
 
-    public function testSavePriceThrowsWhenDefaultProfileCannotBeFound()
+    public function test_savePrice_throws_when_default_profile_cannot_be_found()
     {
         $this->setExpectedException('SclZfPriceManager\Exception\PriceNotFoundException');
 
@@ -256,10 +268,14 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->with($this->equalTo(self::DEFAULT_PROFILE))
              ->will($this->returnValue(null));
 
-        $this->service->savePrice(self::TEST_IDENTIFIER, 42, $this->taxRate);
+        $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(42),
+            $this->taxRate
+        );
     }
 
-    public function testSavePriceLoadsPrice()
+    public function test_savePrice_loads_price()
     {
         $profile = $this->setExpectsToLoadDefaultProfile();
 
@@ -270,33 +286,49 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->method('findByProfileAndVariation')
              ->with($this->identicalTo($profile), $this->identicalTo($variation));
 
-        $this->service->savePrice(self::TEST_IDENTIFIER, 42, $this->taxRate);
+        $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(42),
+            $this->taxRate
+        );
     }
 
-    public function testSavePriceEntityContainsCorrectValues()
+    public function test_savePrice_entity_contains_correct_values()
     {
         $profile = $this->setExpectsToLoadDefaultProfile();
 
         $variation = $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
-        $price = $this->service->savePrice(self::TEST_IDENTIFIER, 105, $this->taxRate);
+        $price = $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(105),
+            $this->taxRate
+        );
 
         $this->assertSame($profile, $price->getProfile(), 'Profile is incorrect.');
         $this->assertSame($variation, $price->getVariation(), 'Variation is incorrect');
     }
 
-    public function testSavePriceEntityUsesGivenProfile()
+    public function test_savePrice_entity_uses_given_profile()
     {
         $profile = $this->getMock('SclZfPriceManager\Entity\Profile');
 
         $item = $this->setExpectsToGetVariation(self::TEST_IDENTIFIER);
 
-        $price = $this->service->savePrice(self::TEST_IDENTIFIER, 105, $this->taxRate, null, '', '', $profile);
+        $price = $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(105),
+            $this->taxRate,
+            null,
+            '',
+            '',
+            $profile
+        );
 
         $this->assertSame($profile, $price->getProfile(), 'Profile is incorrect.');
     }
 
-    public function testSavePriceSavesEntity()
+    public function test_savePrice_saves_entity()
     {
         $amount = 105;
 
@@ -315,10 +347,14 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->method('save')
              ->with($this->equalTo($priceToSave));
 
-        $price = $this->service->savePrice(self::TEST_IDENTIFIER, $amount, $this->taxRate);
+        $price = $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney($amount),
+            $this->taxRate
+        );
     }
 
-    public function testSavePriceLoadsExistingPriceIfItExists()
+    public function test_savePrice_loads_existing_price_if_it_exists()
     {
         $profile = $this->setExpectsToLoadDefaultProfile();
 
@@ -329,10 +365,14 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->method('findByProfileAndVariation')
              ->with($this->identicalTo($profile), $this->identicalTo($variation));
 
-        $this->service->savePrice(self::TEST_IDENTIFIER, 201, $this->taxRate);
+        $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney(201),
+            $this->taxRate
+        );
     }
 
-    public function testSavePriceUpdatesExistingPriceAmount()
+    public function test_savePrice_updates_existing_price_amount()
     {
         $amount = 201;
 
@@ -348,7 +388,11 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->with($this->identicalTo($profile), $this->identicalTo($variation))
              ->will($this->returnValue($price));
 
-        $result = $this->service->savePrice(self::TEST_IDENTIFIER, $amount, $this->taxRate);
+        $result = $this->service->savePrice(
+            self::TEST_IDENTIFIER,
+            $this->createMoney($amount),
+            $this->taxRate
+        );
 
         $this->assertSame($price, $result);
 
@@ -357,11 +401,8 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /*
-     *
      * Protected methods
-     *
      */
-
 
     protected function setLoadingExpectations()
     {
@@ -405,7 +446,8 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function setExpectsToLoadPrice($variation, $profile)
     {
-        $priceEntity = $this->getMock('SclZfPriceManager\Entity\Price');
+        $priceEntity = new PriceEntity();
+        $priceEntity->setTaxRate($this->taxRate);
 
         $this->priceMapper
              ->expects($this->once())
@@ -413,10 +455,11 @@ class PriceServiceTest extends \PHPUnit_Framework_TestCase
              ->with($this->identicalTo($profile), $this->identicalTo($variation))
              ->will($this->returnValue($priceEntity));
 
-        $priceEntity->expects($this->any())
-                    ->method('getTaxRate')
-                    ->will($this->returnValue($this->taxRate));
-
         return $priceEntity;
+    }
+
+    private function createMoney($amount)
+    {
+        return new Money($amount, $this->priceFactory->getDefaultCurrency());
     }
 }
