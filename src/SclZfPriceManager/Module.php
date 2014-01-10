@@ -47,6 +47,7 @@ class Module implements
             'invokables' => array(
             ),
             'factories' => array(
+                /*
                 'scl_zf_pricemanager.money_factory' => function ($sm) {
                     $factory = \SCL\Currency\MoneyFactory::createDefaultInstance();
 
@@ -55,6 +56,7 @@ class Module implements
                     );
                     return $factory;
                 },
+                */
 
                 // Options
                 'SclZfPriceManager\Options\PriceManagerOptionsInterface' => function ($sm) {

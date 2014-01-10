@@ -2,8 +2,14 @@
 
 namespace SclZfPriceManagerTests;
 
-class classTest extends \PHPUnit_Framework_TestCase
+class ServiceManagerTest extends \PHPUnit_Framework_TestCase
 {
+    public function test_blank()
+    {
+        $this->markTestIncomplete('More tests to come.');
+    }
+
+    /*
     public function test_MoneyFactory_is_created()
     {
         $this->assertInstanceOf(
@@ -39,4 +45,5 @@ class classTest extends \PHPUnit_Framework_TestCase
     {
        return \TestBootstrap::getApplication()->getServiceManager();
     }
+    */
 }
